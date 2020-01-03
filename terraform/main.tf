@@ -5,7 +5,7 @@ module "aks" {
   CLIENT_ID            = var.azurerm_client_id
   CLIENT_SECRET        = var.azurerm_client_secret
 
-  prefix               = "aks-awx"
+  prefix               = "aks-palohk-awx"
   admin_username       = "aksadmin"
 
   agents_size          = "Standard_B2ms"
