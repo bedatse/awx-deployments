@@ -33,7 +33,7 @@ resource "azurerm_subnet" "awx" {
   virtual_network_name = "${azurerm_virtual_network.awx.name}"
 
   # this field is deprecated and will be removed in 2.0 - but is required until then
-  route_table_id = "${azurerm_route_table.example.id}"
+  route_table_id = "${azurerm_route_table.awx.id}"
 }
 
 resource "azurerm_subnet_route_table_association" "awx" {
