@@ -54,7 +54,6 @@ resource "azurerm_kubernetes_cluster" "awx" {
 
   default_node_pool {
     name                    = "default"
-    enable_node_public_ip   = true
 
     vm_size                 = "Standard_B2ms"
     os_disk_size_gb         = "50"
@@ -82,4 +81,13 @@ resource "azurerm_kubernetes_cluster" "awx" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore changes to tags, e.g. because a management agent
+      # updates these based on some ruleset managed elsewhere.
+      tags,
+      default_node_pool["node_count"],
+    ]
+  }
 }
