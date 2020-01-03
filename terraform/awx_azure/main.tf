@@ -93,27 +93,33 @@ resource "azurerm_kubernetes_cluster" "awx" {
 }
 
 provider "kubernetes" {
-  host                   = "${azurerm_kubernetes_cluster.awx.kube_config.0.host}"
-  username               = "${azurerm_kubernetes_cluster.awx.kube_config.0.username}"
-  password               = "${azurerm_kubernetes_cluster.awx.kube_config.0.password}"
-  client_certificate     = "${base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)}"
-  client_key             = "${base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)}"
-  cluster_ca_certificate = "${base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)}"
+  host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
+  username               = azurerm_kubernetes_cluster.awx.kube_config.0.username
+  password               = azurerm_kubernetes_cluster.awx.kube_config.0.password
+  client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
+  client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
+  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
 }
 
 provider "helm" {
   kubernetes {
-    host                   = "${azurerm_kubernetes_cluster.awx.kube_config.0.host}"
-    username               = "${azurerm_kubernetes_cluster.awx.kube_config.0.username}"
-    password               = "${azurerm_kubernetes_cluster.awx.kube_config.0.password}"
-    client_certificate     = "${base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)}"
-    client_key             = "${base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)}"
-    cluster_ca_certificate = "${base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)}"
+    host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
+    username               = azurerm_kubernetes_cluster.awx.kube_config.0.username
+    password               = azurerm_kubernetes_cluster.awx.kube_config.0.password
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
+    client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
   }
+}
+
+data "helm_repository" "adwerx" {
+  name = "adwerx"
+  url  = "https://adwerx.github.io/charts/"
 }
 
 resource "helm_release" "awx" {
   name    = "awx"
+  repository = data.helm_repository.adwerx.metadata[0].name
   chart   = "adwerx/awx"
   version = "2.0.3"
 }
