@@ -115,18 +115,18 @@ resource "azurerm_kubernetes_cluster" "awx" {
     }
   }
 
-  role_based_access_control {
-    enabled = true
+  # role_based_access_control {
+  #   enabled = true
 
-    azure_active_directory {
-      # NOTE: in a Production environment these should be different values
-      # but for the purposes of this example, this should be sufficient
-      client_app_id = var.kubernetes_client_id
+  #   azure_active_directory {
+  #     # NOTE: in a Production environment these should be different values
+  #     # but for the purposes of this example, this should be sufficient
+  #     client_app_id = var.kubernetes_client_id
 
-      server_app_id     = var.kubernetes_client_id
-      server_app_secret = var.kubernetes_client_secret
-    }
-  }
+  #     server_app_id     = var.kubernetes_client_id
+  #     server_app_secret = var.kubernetes_client_secret
+  #   }
+  # }
 
   tags = var.tags
 
