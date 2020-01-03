@@ -57,13 +57,12 @@ resource "azurerm_kubernetes_cluster" "awx" {
 
   agent_pool_profile {
     name            = "agentpool"
-    count           = "2"
     vm_size         = "Standard_B2ms"
     os_type         = "Linux"
-    os_disk_size_gb = 50
-    count           = 1
-    min_count       = 1
-    max_count       = 1
+    os_disk_size_gb = "50"
+    count           = "1"
+    min_count       = "1"
+    max_count       = "1"
 
     # Required for advanced networking
     vnet_subnet_id = "${azurerm_subnet.awx.id}"
