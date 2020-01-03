@@ -115,6 +115,6 @@ provider "helm" {
 resource "helm_release" "awx" {
   name    = "awx"
   repository = "https://honestica.github.io/lifen-charts/"
-  chart   = "lifen/awx"
+  chart   = "awx"
   version = "1.0.0"
 }
