@@ -12,8 +12,8 @@ Pull requests are welcome.  We only accept pull request when it comes with quali
 
 ## Authors
 
-* Beda Tse <btse@palo-it.com>
-* Tin Yu <tyu@palo-it.com>
+* Beda Tse - <btse@palo-it.com>
+* Tin Yu - <tyu@palo-it.com>
 
 ## License
 
