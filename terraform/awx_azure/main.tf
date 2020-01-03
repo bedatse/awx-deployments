@@ -112,14 +112,14 @@ provider "helm" {
   }
 }
 
-data "helm_repository" "adwerx" {
-  name = "adwerx"
-  url  = "https://adwerx.github.io/charts/"
+data "helm_repository" "lifen" {
+  name = "lifen"
+  url  = "https://honestica.github.io/lifen-charts/"
 }
 
 resource "helm_release" "awx" {
   name    = "awx"
-  repository = data.helm_repository.adwerx.metadata[0].name
+  repository = data.helm_repository.lifen.metadata[0].name
   chart   = "awx"
   version = "2.0.3"
 }
