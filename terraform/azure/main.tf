@@ -2,6 +2,9 @@ module "aks" {
   source               = "Azure/aks/azurerm"
   version              = "2.0.0"
 
+  CLIENT_ID            = var.azurerm_client_id
+  CLIENT_SECRET        = var.azurerm_client_secret
+
   prefix               = "aks-awx"
   admin_username       = "aksadmin"
 
