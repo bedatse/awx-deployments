@@ -43,9 +43,31 @@ resource "azurerm_subnet_route_table_association" "awx" {
 
 resource "azurerm_kubernetes_cluster" "awx" {
   name                = "aks-${var.awx_service_name}"
-  dns_prefix          = "aks-${var.awx_service_name}"
   location            = azurerm_resource_group.awx.location
   resource_group_name = azurerm_resource_group.awx.name
+
+  dns_prefix          = "aks-${var.awx_service_name}"
+  service_principal {
+    client_id     = var.kubernetes_client_id
+    client_secret = var.kubernetes_client_secret
+  }
+
+  default_node_pool {
+    name                    = "default"
+    enable_node_public_ip   = true
+
+    vm_size                 = "Standard_B2ms"
+    os_disk_size_gb         = "50"
+
+    type                    = "VirtualMachineScaleSets"
+    enable_auto_scaling     = true
+    node_count              = "1"
+    max_count               = "3"
+    min_count               = "1"
+
+    # Required for advanced networking
+    vnet_subnet_id = azurerm_subnet.awx.id
+  }
 
   linux_profile {
     admin_username = "aksadmin"
@@ -53,24 +75,6 @@ resource "azurerm_kubernetes_cluster" "awx" {
     ssh_key {
       key_data = var.ssh_key
     }
-  }
-
-  agent_pool_profile {
-    name            = "agentpool"
-    vm_size         = "Standard_B2ms"
-    os_type         = "Linux"
-    os_disk_size_gb = "50"
-    count           = "1"
-    min_count       = "1"
-    max_count       = "1"
-
-    # Required for advanced networking
-    vnet_subnet_id = azurerm_subnet.awx.id
-  }
-
-  service_principal {
-    client_id     = var.kubernetes_client_id
-    client_secret = var.kubernetes_client_secret
   }
 
   network_profile {
