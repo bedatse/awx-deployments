@@ -5,6 +5,26 @@ resource "azurerm_resource_group" "awx" {
   location = var.location
 }
 
+resource "azurerm_log_analytics_workspace" "awx" {
+  name                = "law-${var.prefix}"
+  location            = azurerm_resource_group.awx.location
+  resource_group_name = azurerm_resource_group.awx.name
+  sku                 = "PerGB2018"
+}
+
+resource "azurerm_log_analytics_solution" "awx" {
+  solution_name         = "Containers"
+  location              = azurerm_resource_group.awx.location
+  resource_group_name   = azurerm_resource_group.awx.name
+  workspace_resource_id = azurerm_log_analytics_workspace.awx.id
+  workspace_name        = azurerm_log_analytics_workspace.awx.name
+
+  plan {
+    publisher = "Microsoft"
+    product   = "OMSGallery/Containers"
+  }
+}
+
 resource "azurerm_route_table" "awx" {
   name                = "rt-${var.awx_service_name}"
   location            = azurerm_resource_group.awx.location
@@ -78,6 +98,34 @@ resource "azurerm_kubernetes_cluster" "awx" {
 
   network_profile {
     network_plugin = "azure"
+  }
+
+  addon_profile {
+    oms_agent {
+      enabled                    = true
+      log_analytics_workspace_id = azurerm_log_analytics_workspace.awx.id
+    }
+
+    kube_dashboard {
+      enabled                    = true
+    }
+
+    http_application_routing {
+      enabled                    = true
+    }
+  }
+
+  role_based_access_control {
+    enabled = true
+
+    azure_active_directory {
+      # NOTE: in a Production environment these should be different values
+      # but for the purposes of this example, this should be sufficient
+      client_app_id = var.kubernetes_client_id
+
+      server_app_id     = var.kubernetes_client_id
+      server_app_secret = var.kubernetes_client_secret
+    }
   }
 
   tags = var.tags
