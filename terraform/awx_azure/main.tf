@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "awx" {
 }
 
 resource "azurerm_log_analytics_workspace" "awx" {
-  name                = "law-${var.prefix}"
+  name                = "law-${var.awx_service_name}"
   location            = azurerm_resource_group.awx.location
   resource_group_name = azurerm_resource_group.awx.name
   sku                 = "PerGB2018"
