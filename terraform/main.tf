@@ -10,3 +10,7 @@ module "azure_aks" {
     Environment    = "dev"
   }
 }
+
+provider "kubernetes" {}
+
+provider "helm" {}
