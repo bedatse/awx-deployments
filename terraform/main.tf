@@ -1,7 +1,3 @@
-module "azure_awx" {
-  source                     = "./azure_awx"
-}
-
 module "azure_aks" {
   source                     = "./azure_aks"
 
