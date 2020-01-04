@@ -157,4 +157,9 @@ resource "helm_release" "awx" {
   repository = "https://honestica.github.io/lifen-charts/"
   chart   = "awx"
   version = "1.0.0"
+
+  set {
+    name = "ingress.enabled"
+    value = "true"
+  }
 }
