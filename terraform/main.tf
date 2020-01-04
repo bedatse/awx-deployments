@@ -1,3 +1,7 @@
+module "azure_awx" {
+  source                     = "./azure_aws"
+}
+
 module "azure_aks" {
   source                     = "./azure_aks"
 
@@ -10,7 +14,3 @@ module "azure_aks" {
     Environment    = "dev"
   }
 }
-
-provider "kubernetes" {}
-
-provider "helm" {}
