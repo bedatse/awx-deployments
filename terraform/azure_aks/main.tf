@@ -98,6 +98,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   name                = "aks-${var.aks_service_name}"
   location            = azurerm_resource_group.aks.location
   resource_group_name = azurerm_resource_group.aks.name
+  kubernetes_version  = "1.15.5"
 
   dns_prefix          = "aks-${var.aks_service_name}"
   service_principal {
