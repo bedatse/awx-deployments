@@ -1,8 +1,12 @@
-# Replace AKS Module with Terraform native resources for AKS
-
 resource "azurerm_resource_group" "awx" {
-  name     = "rg-${var.awx_service_name}"
-  location = var.location
+  name                       = "rg-${var.awx_service_name}"
+  location                   = var.location
+}
+
+resource "azurerm_role_assignment" "example" {
+  scope                = azurerm_resource_group.awx.id
+  role_definition_name = "Contributor"
+  principal_id         = var.kubernetes_client_id
 }
 
 resource "azurerm_log_analytics_workspace" "awx" {
@@ -140,55 +144,26 @@ resource "azurerm_kubernetes_cluster" "awx" {
   }
 }
 
-provider "kubernetes" {
-  host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
-  client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
-  client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
-  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
-}
+# provider "kubernetes" {
+#   host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
+#   client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
+#   client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
+#   cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
+# }
 
-# resource "kubernetes_service_account" "tiller_sa" {
-#   metadata {
-#     name      = "tiller"
-#     namespace = "kube-system"
+# provider "helm" {
+#   debug           = true
+#   kubernetes {
+#     host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
+#     client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
+#     client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
+#     cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
 #   }
 # }
 
-# resource "kubernetes_cluster_role_binding" "tiller_sa_cluster_admin_rb" {
-#   metadata {
-#     name = "tiller-cluster-role"
-#   }
-#   role_ref {
-#     kind      = "ClusterRole"
-#     name      = "cluster-admin"
-#     api_group = "rbac.authorization.k8s.io"
-#   }
-#   subject {
-#     kind      = "ServiceAccount"
-#     name      = kubernetes_service_account.tiller_sa.metadata.0.name
-#     namespace = "kube-system"
-#     api_group = ""
-#   }
+# resource "helm_release" "awx" {
+#   name    = "awx"
+#   repository = "https://honestica.github.io/lifen-charts/"
+#   chart   = "awx"
+#   version = "1.0.0"
 # }
-
-provider "helm" {
-  debug           = true
-  # namespace       = "kube-system"
-  # service_account = "tiller"
-  # install_tiller  = "true"
-  # tiller_image    = "gcr.io/kubernetes-helm/tiller:v${var.TILLER_VER}"
-
-  kubernetes {
-    host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
-    client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
-    client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
-    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
-  }
-}
-
-resource "helm_release" "awx" {
-  name    = "awx"
-  repository = "https://honestica.github.io/lifen-charts/"
-  chart   = "awx"
-  version = "1.0.0"
-}
