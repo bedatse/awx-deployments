@@ -135,26 +135,26 @@ resource "azurerm_kubernetes_cluster" "awx" {
   }
 }
 
-# provider "kubernetes" {
-#   host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
-#   client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
-#   client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
-#   cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
-# }
+provider "kubernetes" {
+  host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
+  client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
+  client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
+  cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
+}
 
-# provider "helm" {
-#   debug           = true
-#   kubernetes {
-#     host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
-#     client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
-#     client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
-#     cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
-#   }
-# }
+provider "helm" {
+  debug           = true
+  kubernetes {
+    host                   = azurerm_kubernetes_cluster.awx.kube_config.0.host
+    client_certificate     = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_certificate)
+    client_key             = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.client_key)
+    cluster_ca_certificate = base64decode(azurerm_kubernetes_cluster.awx.kube_config.0.cluster_ca_certificate)
+  }
+}
 
-# resource "helm_release" "awx" {
-#   name    = "awx"
-#   repository = "https://honestica.github.io/lifen-charts/"
-#   chart   = "awx"
-#   version = "1.0.0"
-# }
+resource "helm_release" "awx" {
+  name    = "awx"
+  repository = "https://honestica.github.io/lifen-charts/"
+  chart   = "awx"
+  version = "1.0.0"
+}
