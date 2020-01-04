@@ -1,3 +1,9 @@
-provider "kubernetes" {}
+provider "kubernetes" {
 
-provider "helm" {}
+}
+
+provider "helm" {
+  kubernetes {
+
+  }
+}
