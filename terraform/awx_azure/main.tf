@@ -130,7 +130,7 @@ resource "azurerm_kubernetes_cluster" "awx" {
       # Ignore changes to tags, e.g. because a management agent
       # updates these based on some ruleset managed elsewhere.
       tags,
-      default_node_pool["node_count"],
+      default_node_pool[0].node_count,
     ]
   }
 }
@@ -157,6 +157,7 @@ resource "helm_release" "awx" {
   repository = "https://honestica.github.io/lifen-charts/"
   chart   = "awx"
   version = "1.0.0"
+  timeout = "3600"
 
   set {
     name = "ingress.enabled"
