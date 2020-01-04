@@ -8,6 +8,7 @@ module "azure_awx" {
 
   kubernetes_client_id       = var.kubernetes_client_id
   kubernetes_client_secret   = var.kubernetes_client_secret
+  kubernetes_sp_object_id    = var.kubernetes_sp_object_id
 
   tags                       = {
     Environment    = "dev"
