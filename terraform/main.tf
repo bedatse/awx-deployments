@@ -1,5 +1,5 @@
 module "azure_awx" {
-  source                     = "./azure_aws"
+  source                     = "./azure_awx"
 }
 
 module "azure_aks" {
