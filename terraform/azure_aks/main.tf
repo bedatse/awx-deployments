@@ -6,7 +6,16 @@ provider "azurerm" {
   version = "=1.39.0"
 }
 
-resource "azuread_application" "aks" {
+resource "random_password" "aks_sp_password" {
+  length = 40
+  special = true
+  min_upper = 1
+  min_lower = 1
+  min_numeric = 1
+  min_special = 1
+}
+
+resource "azuread_application" "aks_app" {
   name                       = var.aks_service_name
   homepage                   = "http://${var.aks_service_name}"
   identifier_uris            = ["http://${var.aks_service_name}"]
@@ -15,9 +24,15 @@ resource "azuread_application" "aks" {
   oauth2_allow_implicit_flow = true
 }
 
-resource "azuread_service_principal" "aks" {
-  application_id               = azuread_application.aks.application_id
+resource "azuread_service_principal" "aks_sp" {
+  application_id               = azuread_application.aks_app.application_id
   app_role_assignment_required = false
+}
+
+resource "azuread_service_principal_password" "aks_sp" {
+  service_principal_id = azuread_service_principal.aks_sp.id
+  value                = random_password.aks_sp_password.result
+  end_date             = "2023-01-01T00:00:00Z"
 }
 
 # resource "azurerm_resource_group" "aks" {
